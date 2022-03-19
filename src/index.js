@@ -3,18 +3,29 @@ import React from 'react';
 import './index.css'
 
 class AddTask extends React.Component {
-    handleTaskTextChange(){
-
+    constructor(props){
+        super(props);
+        this.state = {
+            taskDesc: ''
+        }
     }
-    
-    handleAddTaskClick(){
+    handleTaskTextChange(e){
+        this.setState({
+            taskDesc: e.target.value
+        })
+    }
 
+    handleAddTaskClick(){
+        this.props.handlerToCollectTaskInfo(this.state.taskDesc);
+        this.setState({
+            taskDesc: ''
+        })
     }
 
     render(){
         return(
             <form>
-                <input type="text" onChange={() => this.handleTaskTextChange()} />
+                <input type="text" value={this.state.taskDesc} onChange={(e) => this.handleTaskTextChange(e)} />
                 <input type="button" value="Add Task" onClick={() => this.handleAddTaskClick()}/>
             </form>
         )
@@ -82,6 +93,17 @@ class App extends React.Component {
         }
     }
 
+    handleNewTask(taskDesc){
+        let oldTasks = this.state.tasks.slice();
+
+        oldTasks.push({
+            desc: taskDesc,
+            isFinished: false
+        });
+        this.setState({
+            tasks: oldTasks
+        })
+    }
 
     render(){
        let tasks = this.state.tasks;
@@ -91,7 +113,7 @@ class App extends React.Component {
        return (
            <>
               <div className="add-task">
-                <AddTask />
+                <AddTask handlerToCollectTaskInfo={(taskDesc) => this.handleNewTask(taskDesc)}/>
               </div>
               <div className='task-lists'>
                 <TaskList tasks={todoTasks} purpose="Todo" forStyling="todo"/>
